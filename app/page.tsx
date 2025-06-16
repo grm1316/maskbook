@@ -1,95 +1,318 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import Image from 'next/image';
+import styled, { createGlobalStyle } from 'styled-components';
+
+const popularPosts = [
+  { id: 1, title: '오늘 점심 뭐 먹지...', date: '2025.06.16', likecount: 25 },
+  { id: 2, title: '비와요', date: '2025.06.16', likecount: 10 },
+  { id: 3, title: '집에 가고 싶다', date: '2025.06.16', likecount: 50 },
+  { id: 4, title: '집 갈래요', date: '2025.06.16', likecount: 2 },
+  { id: 5, title: '에어컨 설치해야해요', date: '2025.06.16', likecount: 9 },
+];
+
+
+const GlobalStyle = createGlobalStyle`
+  html, body, #__next {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+`;
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    <>
+      <GlobalStyle />
+      <Container>
+        <TopBar>
+          <Logo>
+            <Image src="/maskbook 로고.png" alt="로고" width={89} height={104} priority />
+          </Logo>
+          <SignInWrapper>
+            <SignIn>Sign In</SignIn>
+          </SignInWrapper>
+        </TopBar>
+        <Main>
+          <LeftArea>
+            <SearchGuide>
+              <SearchIcon>
+                <Image src="/검색아이콘.png" alt="검색" width={57} height={57} />
+              </SearchIcon>
+              <SearchInput placeholder="관심있는 내용을 검색해보세요." />
+            </SearchGuide>
+            <BestSection>
+              <BestHeader>
+                <BestIcon>
+                  <Image src="/베스트 아이콘.png" alt="베스트" width={59} height={59} />
+                </BestIcon>
+                <BestText>Best</BestText>
+              </BestHeader>
+              <BestDivider />
+              <BestList>
+                {popularPosts.map((post, idx) => (
+                  <div key={post.id}>
+                    <BestItem>
+                      <BestContentBox>
+                        <BestContent>{post.title}</BestContent>
+                        <BestMeta>
+                          <MetaItem>
+                            <MetaIcon>
+                              <Image src="/게시 시간.png" alt="날짜" width={18} height={18} />
+                            </MetaIcon>
+                            <MetaText>{post.date}</MetaText>
+                          </MetaItem>
+                        </BestMeta>
+                      </BestContentBox>
+                      <BestCount>
+                        <Image src="/하트.png" alt="좋아요" width={20} height={20} style={{marginRight: 4}} />
+                        {post.likecount}
+                      </BestCount>
+                    </BestItem>
+                    {idx !== popularPosts.length - 1 && <BestDivider />}
+                  </div>
+                ))}
+              </BestList>
+            </BestSection>
+          </LeftArea>
+          <RightArea>
+            <AdBox>
+              <Image src="/ad.png" alt="광고" fill style={{objectFit: 'cover', borderRadius: '16px'}} />
+            </AdBox>
+          </RightArea>
+        </Main>
+      </Container>
+    </>
   );
 }
+
+const Container = styled.div`
+  width: 100vw;
+  min-height: 100vh;
+  background: #fff;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+`;
+
+const TopBar = styled.header`
+  width: 100vw;
+  height: 104px;
+  background: rgba(231, 239, 199, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0 2vw;
+  box-sizing: border-box;
+`;
+
+const Logo = styled.div`
+  width: 89px;
+  height: 104px;
+  display: flex;
+  align-items: center;
+`;
+
+const SignInWrapper = styled.div`
+  width: 130px;
+  height: 69px;
+  background: #AEC8A4;
+  border-radius: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SignIn = styled.button`
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  color: #000;
+  cursor: pointer;
+  border-radius: 200px;
+`;
+
+const Main = styled.main`
+  width: 100vw;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4vw;
+  box-sizing: border-box;
+  padding: 40px 2vw 0 2vw;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: 1fr;
+    gap: 1vw;
+  }
+`;
+
+const LeftArea = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 4vw;
+`;
+
+const SearchGuide = styled.div`
+  width: 100%;
+  min-width: 300px;
+  max-width: 855px;
+  height: 95px;
+  background: #fff;
+  border: 1px solid #000;
+  box-shadow: 0px 4px 4px rgba(0,0,0,0.25);
+  border-radius: 200px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 40px;
+`;
+
+const SearchIcon = styled.div`
+  position: absolute;
+  left: 30px;
+  top: 19px;
+  width: 57px;
+  height: 57px;
+  border-radius: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const SearchInput = styled.input`
+  margin-left: 100px;
+  width: 70%;
+  min-width: 150px;
+  height: 60px;
+  border: none;
+  outline: none;
+  font-size: 32px;
+  background: transparent;
+  color: #000;
+`;
+
+const BestSection = styled.section`
+  width: 100%;
+  max-width: 906px;
+  background: transparent;
+  margin-top: 20px;
+`;
+
+const BestHeader = styled.div`
+  display: flex;
+  align-items: center;
+  height: 93px;
+`;
+
+const BestIcon = styled.div`
+  width: 59px;
+  height: 59px;
+  margin-right: 12px;
+`;
+
+const BestText = styled.div`
+  font-size: 32px;
+  font-weight: 400;
+  color: #000;
+  line-height: 39px;
+`;
+
+const BestDivider = styled.div`
+  width: 100%;
+  height: 0px;
+  border: 1px solid #000;
+  margin: 8px 0;
+  transform: rotate(0.27deg);
+`;
+
+const BestList = styled.div`
+  margin-top: 10px;
+`;
+
+const BestItem = styled.div`
+  display: flex;
+  align-items: center;
+  height: 61px;
+  margin-bottom: 10px;
+  justify-content: space-between;
+`;
+
+const BestContentBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
+
+const BestContent = styled.div`
+  font-size: 26px;
+  color: #000;
+  font-weight: 400;
+  line-height: 31px;
+`;
+
+const BestMeta = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+`;
+
+const MetaItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+`;
+
+const MetaIcon = styled.span`
+  display: flex;
+  align-items: center;
+  margin-right: 4px;
+`;
+
+const MetaText = styled.span`
+  font-size: 16px;
+  color: #888;
+`;
+
+const BestCount = styled.div`
+  min-width: 60px;
+  font-size: 22px;
+  color: #e74c3c;
+  font-weight: 500;
+  line-height: 31px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+`;
+
+const RightArea = styled.section`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  min-width: 347px;
+`;
+
+const AdBox = styled.div`
+  width: 347px;
+  height: 674px;
+  background: #eee;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+`;
