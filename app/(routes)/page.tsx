@@ -1,16 +1,21 @@
 'use client';
 
+import { Post } from '@/lib/generated/prisma';
 import Image from 'next/image';
 import styled, { createGlobalStyle } from 'styled-components';
+import useSWR from 'swr';
+import { LdsSpinner } from '../_components/loading-spinner'; 
 
-const popularPosts = [
-  { id: 1, title: '오늘 점심 뭐 먹지...', date: '2025.06.16', likecount: 25 },
-  { id: 2, title: '비와요', date: '2025.06.16', likecount: 10 },
-  { id: 3, title: '집에 가고 싶다', date: '2025.06.16', likecount: 50 },
-  { id: 4, title: '집 갈래요', date: '2025.06.16', likecount: 2 },
-  { id: 5, title: '에어컨 설치해야해요', date: '2025.06.16', likecount: 9 },
-];
 
+// 날짜 포맷 함수 추가
+const formatDate = (rawDate: string | Date) => {
+  if (!rawDate) return '';
+  const dObj = new Date(rawDate);
+  const yy = dObj.getFullYear().toString().slice(2);
+  const mm = String(dObj.getMonth() + 1).padStart(2, '0');
+  const dd = String(dObj.getDate()).padStart(2, '0');
+  return `${yy}.${mm}.${dd}`;
+};
 
 const GlobalStyle = createGlobalStyle`
   html, body, #__next {
@@ -23,7 +28,14 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+interface Postresponse {
+  ok: boolean;
+  postList: Post[];
+}
+
 export default function Home() {
+  const { data, error, isLoading } = useSWR<Postresponse>('/api/post');
+
   return (
     <>
       <GlobalStyle />
@@ -53,7 +65,13 @@ export default function Home() {
               </BestHeader>
               <BestDivider />
               <BestList>
-                {popularPosts.map((post, idx) => (
+                {isLoading && (
+                  <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+                    <LdsSpinner />
+                  </div>
+                )}
+                {error && <div>에러가 발생했습니다.</div>}
+                {data?.postList?.map((post, idx) => (
                   <div key={post.id}>
                     <BestItem>
                       <BestContentBox>
@@ -63,16 +81,20 @@ export default function Home() {
                             <MetaIcon>
                               <Image src="/게시 시간.png" alt="날짜" width={18} height={18} />
                             </MetaIcon>
-                            <MetaText>{post.date}</MetaText>
+                            <MetaText>
+                              {'createdAt' in post
+                                ? formatDate((post as any).createdAt)
+                                : formatDate((post as any).date)}
+                            </MetaText>
                           </MetaItem>
                         </BestMeta>
                       </BestContentBox>
                       <BestCount>
-                        <Image src="/하트.png" alt="좋아요" width={20} height={20} style={{marginRight: 4}} />
-                        {post.likecount}
+                        <Image src="/하트.png" alt="좋아요" width={20} height={20} style={{ marginRight: 4 }} />
+                        {'likeCount' in post ? (post as any).likeCount : (post as any).likecount}
                       </BestCount>
                     </BestItem>
-                    {idx !== popularPosts.length - 1 && <BestDivider />}
+                    {data.postList && idx !== data.postList.length - 1 && <BestDivider />}
                   </div>
                 ))}
               </BestList>
@@ -80,7 +102,7 @@ export default function Home() {
           </LeftArea>
           <RightArea>
             <AdBox>
-              <Image src="/ad.png" alt="광고" fill style={{objectFit: 'cover', borderRadius: '16px'}} />
+              <Image src="/ad.png" alt="광고" fill style={{ objectFit: 'cover', borderRadius: '16px' }} />
             </AdBox>
           </RightArea>
         </Main>
@@ -88,6 +110,7 @@ export default function Home() {
     </>
   );
 }
+
 
 const Container = styled.div`
   width: 100vw;
@@ -316,3 +339,10 @@ const AdBox = styled.div`
   position: relative;
   box-shadow: 0 2px 16px rgba(0,0,0,0.07);
 `;
+
+const SpinnerWrapper = styled.div`
+width: 100%;
+height: 100%;
+display: flex;
+justify-content: center
+;`

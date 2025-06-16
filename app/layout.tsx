@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import StyledComponentsRegistry from "@/lib/registry";
+import SwrProvider from "./_providers/swr-providers";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <StyledComponentsRegistry>
-        {children}
+          <SwrProvider>
+            {children}
+          </SwrProvider>
         </StyledComponentsRegistry>
       </body>
     </html>
