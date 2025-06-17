@@ -1,7 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import styled from 'styled-components';
+
 
 interface FrameProps {
   children: React.ReactNode;
@@ -12,7 +14,9 @@ export default function Frame({ children }: FrameProps) {
     <Container>
       <TopBar>
         <Logo>
-          <Image src="/maskbook 로고.png" alt="로고" width={89} height={104} priority />
+          <Link href="/" passHref>
+            <Image src="/maskbook 로고.png" alt="로고" width={100} height={104} priority style={{ cursor: 'pointer' }} />
+          </Link>
         </Logo>
         <SignInWrapper>
           <SignIn>Sign In</SignIn>

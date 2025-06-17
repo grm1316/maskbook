@@ -4,10 +4,11 @@ import { Post } from '@/lib/generated/prisma';
 import Image from 'next/image';
 import styled, { createGlobalStyle } from 'styled-components';
 import useSWR from 'swr';
-import { LdsSpinner } from '../_components/loading-spinner'; 
+import { LdsSpinner } from '../_components/loading-spinner';
+import Frame from '../_components/frame';
+import Link from 'next/link';
 
-
-// 날짜 포맷 함수 추가
+// 날짜 포맷 함수
 const formatDate = (rawDate: string | Date) => {
   if (!rawDate) return '';
   const dObj = new Date(rawDate);
@@ -39,15 +40,7 @@ export default function Home() {
   return (
     <>
       <GlobalStyle />
-      <Container>
-        <TopBar>
-          <Logo>
-            <Image src="/maskbook 로고.png" alt="로고" width={89} height={104} priority />
-          </Logo>
-          <SignInWrapper>
-            <SignIn>Sign In</SignIn>
-          </SignInWrapper>
-        </TopBar>
+      <Frame>
         <Main>
           <LeftArea>
             <SearchGuide>
@@ -66,34 +59,37 @@ export default function Home() {
               <BestDivider />
               <BestList>
                 {isLoading && (
-                  <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
+                  <SpinnerWrapper>
                     <LdsSpinner />
-                  </div>
+                  </SpinnerWrapper>
                 )}
                 {error && <div>에러가 발생했습니다.</div>}
                 {data?.postList?.map((post, idx) => (
                   <div key={post.id}>
-                    <BestItem>
-                      <BestContentBox>
-                        <BestContent>{post.title}</BestContent>
-                        <BestMeta>
-                          <MetaItem>
-                            <MetaIcon>
-                              <Image src="/게시 시간.png" alt="날짜" width={18} height={18} />
-                            </MetaIcon>
-                            <MetaText>
-                              {'createdAt' in post
-                                ? formatDate((post as any).createdAt)
-                                : formatDate((post as any).date)}
-                            </MetaText>
-                          </MetaItem>
-                        </BestMeta>
-                      </BestContentBox>
-                      <BestCount>
-                        <Image src="/하트.png" alt="좋아요" width={20} height={20} style={{ marginRight: 4 }} />
-                        {'likeCount' in post ? (post as any).likeCount : (post as any).likecount}
-                      </BestCount>
-                    </BestItem>
+                    <Link
+                      href={`/${post.id}`}
+                      style={{ textDecoration: 'none', color: 'inherit' }}
+                    >
+                      <BestItem>
+                        <BestContentBox>
+                          <BestContent>{post.title}</BestContent>
+                          <BestMeta>
+                            <MetaItem>
+                              <MetaIcon>
+                                <Image src="/게시 시간.png" alt="날짜" width={18} height={18} />
+                              </MetaIcon>
+                              <MetaText>
+                                {formatDate((post as any).createdAt ?? (post as any).date)}
+                              </MetaText>
+                            </MetaItem>
+                          </BestMeta>
+                        </BestContentBox>
+                        <BestCount>
+                          <Image src="/하트.png" alt="좋아요" width={20} height={20} style={{ marginRight: 4 }} />
+                          {(post as any).likeCount ?? (post as any).likecount}
+                        </BestCount>
+                      </BestItem>
+                    </Link>
                     {data.postList && idx !== data.postList.length - 1 && <BestDivider />}
                   </div>
                 ))}
@@ -106,65 +102,10 @@ export default function Home() {
             </AdBox>
           </RightArea>
         </Main>
-      </Container>
+      </Frame>
     </>
   );
 }
-
-
-const Container = styled.div`
-  width: 100vw;
-  min-height: 100vh;
-  background: #fff;
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  box-sizing: border-box;
-`;
-
-const TopBar = styled.header`
-  width: 100vw;
-  height: 104px;
-  background: rgba(231, 239, 199, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  padding: 0 2vw;
-  box-sizing: border-box;
-`;
-
-const Logo = styled.div`
-  width: 89px;
-  height: 104px;
-  display: flex;
-  align-items: center;
-`;
-
-const SignInWrapper = styled.div`
-  width: 130px;
-  height: 69px;
-  background: #AEC8A4;
-  border-radius: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const SignIn = styled.button`
-  width: 100%;
-  height: 100%;
-  background: none;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  font-size: 32px;
-  color: #000;
-  cursor: pointer;
-  border-radius: 200px;
-`;
 
 const Main = styled.main`
   width: 100vw;
@@ -341,8 +282,8 @@ const AdBox = styled.div`
 `;
 
 const SpinnerWrapper = styled.div`
-width: 100%;
-height: 100%;
-display: flex;
-justify-content: center
-;`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+`;
