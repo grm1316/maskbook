@@ -19,7 +19,9 @@ export default function Frame({ children }: FrameProps) {
           </Link>
         </Logo>
         <SignInWrapper>
-          <SignIn>Sign In</SignIn>
+          <Link href="/sign-up" passHref>
+            <SignIn>Sign In</SignIn>
+          </Link>
         </SignInWrapper>
       </TopBar>
       {children}

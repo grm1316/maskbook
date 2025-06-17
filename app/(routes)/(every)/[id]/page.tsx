@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import Image from 'next/image';
 import styled from 'styled-components';
 import Link from 'next/link';
+import Frame from '../../../_components/frame';
 
 interface Post {
   id: number;
@@ -50,14 +51,7 @@ export default function PostDetail() {
   const post = data.post;
 
   return (
-    <Container>
-      <Header>
-        <LogoArea>
-          <Image src="/maskbook 로고.png" alt="logo" width={60} height={60} />
-          <span>Maskbook</span>
-        </LogoArea>
-        <SignInBtn>sign in</SignInBtn>
-      </Header>
+    <Frame>
       <Content>
         <BoardTitle>
           <Image src="/댓글.png" alt="icon" width={50} height={50} />
@@ -73,12 +67,12 @@ export default function PostDetail() {
             {formatDate(post.createdAt ?? '')}
           </MetaItem>
           <MetaItem>
-              <Image src="/베스트 아이콘.png" alt="like" width={20} height={20} />
-              {post.likecount ?? 0}
-              <Image src="/조회수.png" alt="view" width={20} height={20} />
-              {post.views ?? 0}
-              <Image src="/댓글.png" alt="comment" width={20} height={20} />
-              {post.comments ?? 0}
+            <Image src="/베스트 아이콘.png" alt="like" width={20} height={20} />
+            {post.likecount ?? 0}
+            <Image src="/조회수.png" alt="view" width={20} height={20} />
+            {post.views ?? 0}
+            <Image src="/댓글.png" alt="comment" width={20} height={20} />
+            {post.comments ?? 0}
           </MetaItem>
           <Report>
             <Image src="/신고하기.png" alt="report" width={20} height={20} />
@@ -103,12 +97,12 @@ export default function PostDetail() {
           </Link>
         </ListBtnArea>
       </Content>
-    </Container>
+    </Frame>
   );
 }
 
 const Centered = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -116,58 +110,31 @@ const Centered = styled.div`
   font-size: 1.3rem;
 `;
 
-const Container = styled.div`
-  min-height: 100vh;
-  background: #f7faef;
-`;
-
-const Header = styled.header`
-  width: 100vw;
-  height: 80px;
-  background: #f3f8e7;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2vw;
-`;
-
-const LogoArea = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: bold;
-  font-size: 1.2rem;
-`;
-
-const SignInBtn = styled.button`
-  background: #c7dbb5;
-  border: none;
-  border-radius: 20px;
-  padding: 8px 24px;
-  font-size: 1.1rem;
-  color: #333;
-  cursor: pointer;
-`;
-
 const Content = styled.div`
   max-width: 900px;
+  width: 90%;
   margin: 40px auto 0 auto;
   background: #fff;
   border-radius: 16px;
   padding: 40px 32px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-sizing: border-box;
 `;
 
 const BoardTitle = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 16px;
+  width: 100%;
+  flex-wrap: wrap;
 `;
 
 const TitleTexts = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+  min-width: 200px;
 `;
 
 const SubTitle = styled.div`
@@ -179,6 +146,8 @@ const MainTitle = styled.div`
   font-size: 2rem;
   font-weight: bold;
   margin-top: 4px;
+  word-break: break-word;
+  overflow-wrap: break-word;
 `;
 
 const Writer = styled.div`
@@ -193,12 +162,14 @@ const Meta = styled.div`
   margin: 18px 0 10px 0;
   font-size: 1.1rem;
   color: #222;
+  flex-wrap: wrap;
 `;
 
 const MetaItem = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-wrap: wrap;
 `;
 
 const Report = styled.div`
@@ -221,6 +192,9 @@ const PostBody = styled.div`
   font-size: 1.2rem;
   color: #222;
   margin-bottom: 40px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 `;
 
 const LikeArea = styled.div`
@@ -249,4 +223,9 @@ const ListBtn = styled.button`
   align-items: center;
   gap: 8px;
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    padding: 10px 24px;
+    font-size: 1rem;
+  }
 `;
